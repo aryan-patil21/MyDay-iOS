@@ -98,13 +98,18 @@ struct TaskListView: View {
     private func toggleTask(_ task: TaskItem) {
         withAnimation {
             task.isCompleted.toggle()
+            if task.isCompleted {
+                NotificationManager.shared.cancelTaskReminder(for: task)
+            }
         }
     }
     
     private func deletePendingTasks(at offsets: IndexSet) {
         withAnimation {
             for index in offsets {
-                modelContext.delete(pendingTasks[index])
+                let task = pendingTasks[index]
+                NotificationManager.shared.cancelTaskReminder(for: task)
+                modelContext.delete(task)
             }
         }
     }
@@ -112,7 +117,9 @@ struct TaskListView: View {
     private func deleteCompletedTasks(at offsets: IndexSet) {
         withAnimation {
             for index in offsets {
-                modelContext.delete(completedTasks[index])
+                let task = completedTasks[index]
+                NotificationManager.shared.cancelTaskReminder(for: task)
+                modelContext.delete(task)
             }
         }
     }

@@ -16,6 +16,7 @@ struct NewTaskSheet: View {
     @State private var notes: String = ""
     @State private var dueDate: Date = Date()
     @State private var priority: Priority = .medium
+    @State private var hasReminder: Bool = false
     
     var body: some View {
         NavigationStack {
@@ -28,6 +29,8 @@ struct NewTaskSheet: View {
                 
                 Section("Schedule & Priority") {
                     DatePicker("Due Date", selection: $dueDate, displayedComponents: [.date, .hourAndMinute])
+                    
+                    Toggle("Remind Me on Due Date", isOn: $hasReminder)
                     
                     Picker("Priority", selection: $priority) {
                         ForEach(Priority.allCases) { p in
@@ -66,6 +69,13 @@ struct NewTaskSheet: View {
             priority: priority
         )
         modelContext.insert(newTask)
+        
+        if hasReminder {
+            Task {
+                await NotificationManager.shared.scheduleTaskReminder(for: newTask)
+            }
+        }
+        
         dismiss()
     }
 }

@@ -17,6 +17,7 @@ struct DashboardView: View {
     
     @State private var showingReflectionSheet = false
     @State private var showingNewTaskSheet = false
+    @State private var showingSettingsSheet = false
     
     // Computed Time-of-Day Greeting
     private var greeting: String {
@@ -99,11 +100,23 @@ struct DashboardView: View {
             }
             .navigationTitle("Today")
             .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        showingSettingsSheet = true
+                    } label: {
+                        Image(systemName: "gearshape")
+                    }
+                }
+            }
             .sheet(isPresented: $showingReflectionSheet) {
                 NewReflectionSheet()
             }
             .sheet(isPresented: $showingNewTaskSheet) {
                 NewTaskSheet()
+            }
+            .sheet(isPresented: $showingSettingsSheet) {
+                SettingsSheet()
             }
         }
     }
@@ -276,6 +289,9 @@ struct DashboardView: View {
                             Button {
                                 withAnimation {
                                     task.isCompleted.toggle()
+                                    if task.isCompleted {
+                                        NotificationManager.shared.cancelTaskReminder(for: task)
+                                    }
                                 }
                             } label: {
                                 Image(systemName: task.isCompleted ? "checkmark.circle.fill" : "circle")
