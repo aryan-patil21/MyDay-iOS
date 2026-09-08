@@ -11,6 +11,11 @@ import SwiftData
 struct ContentView: View {
     var body: some View {
         TabView {
+            DashboardView()
+                .tabItem {
+                    Label("Today", systemImage: "sun.max.fill")
+                }
+            
             TaskListView()
                 .tabItem {
                     Label("Tasks", systemImage: "checklist")
