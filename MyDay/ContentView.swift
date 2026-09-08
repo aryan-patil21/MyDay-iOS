@@ -10,46 +10,109 @@ import SwiftData
 
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
-    @Query private var items: [Item]
-
+    @Query(sort: \TaskItem.dueDate, order: .forward) private var tasks: [TaskItem]
+    
+    @State private var showingNewTaskSheet = false
+    @State private var searchText = ""
+    
+    private var filteredTasks: [TaskItem] {
+        if searchText.isEmpty {
+            return tasks
+        } else {
+            return tasks.filter {
+                $0.title.localizedCaseInsensitiveContains(searchText) ||
+                $0.notes.localizedCaseInsensitiveContains(searchText)
+            }
+        }
+    }
+    
+    private var pendingTasks: [TaskItem] {
+        filteredTasks.filter { !$0.isCompleted }
+    }
+    
+    private var completedTasks: [TaskItem] {
+        filteredTasks.filter { $0.isCompleted }
+    }
+    
     var body: some View {
-        NavigationSplitView {
-            List {
-                ForEach(items) { item in
-                    NavigationLink {
-                        Text("Item at \(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))")
-                    } label: {
-                        Text(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))
+        NavigationStack {
+            Group {
+                if tasks.isEmpty {
+                    emptyStateView
+                } else {
+                    List {
+                        if !pendingTasks.isEmpty {
+                            Section("Pending (\(pendingTasks.count))") {
+                                ForEach(pendingTasks) { task in
+                                    TaskRowView(task: task) {
+                                        toggleTask(task)
+                                    }
+                                }
+                                .onDelete(perform: deletePendingTasks)
+                            }
+                        }
+                        
+                        if !completedTasks.isEmpty {
+                            Section("Completed (\(completedTasks.count))") {
+                                ForEach(completedTasks) { task in
+                                    TaskRowView(task: task) {
+                                        toggleTask(task)
+                                    }
+                                }
+                                .onDelete(perform: deleteCompletedTasks)
+                            }
+                        }
                     }
                 }
-                .onDelete(perform: deleteItems)
             }
+            .searchable(text: $searchText, prompt: "Search tasks")
+            .navigationTitle("Today's Tasks")
             .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    EditButton()
-                }
-                ToolbarItem {
-                    Button(action: addItem) {
-                        Label("Add Item", systemImage: "plus")
+                ToolbarItem(placement: .primaryAction) {
+                    Button {
+                        showingNewTaskSheet = true
+                    } label: {
+                        Label("Add Task", systemImage: "plus")
                     }
                 }
             }
-        } detail: {
-            Text("Select an item")
+            .sheet(isPresented: $showingNewTaskSheet) {
+                NewTaskSheet()
+            }
         }
     }
-
-    private func addItem() {
+    
+    private var emptyStateView: some View {
+        ContentUnavailableView {
+            Label("No Tasks Yet", systemImage: "checklist")
+        } description: {
+            Text("Tap the + button to add your first task and start organizing your day.")
+        } actions: {
+            Button("Add Task") {
+                showingNewTaskSheet = true
+            }
+            .buttonStyle(.borderedProminent)
+        }
+    }
+    
+    private func toggleTask(_ task: TaskItem) {
         withAnimation {
-            let newItem = Item(timestamp: Date())
-            modelContext.insert(newItem)
+            task.isCompleted.toggle()
         }
     }
-
-    private func deleteItems(offsets: IndexSet) {
+    
+    private func deletePendingTasks(at offsets: IndexSet) {
         withAnimation {
             for index in offsets {
-                modelContext.delete(items[index])
+                modelContext.delete(pendingTasks[index])
+            }
+        }
+    }
+    
+    private func deleteCompletedTasks(at offsets: IndexSet) {
+        withAnimation {
+            for index in offsets {
+                modelContext.delete(completedTasks[index])
             }
         }
     }
@@ -57,5 +120,5 @@ struct ContentView: View {
 
 #Preview {
     ContentView()
-        .modelContainer(for: Item.self, inMemory: true)
+        .modelContainer(for: TaskItem.self, inMemory: true)
 }
