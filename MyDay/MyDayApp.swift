@@ -13,6 +13,8 @@ struct MyDayApp: App {
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
             TaskItem.self,
+            Habit.self,
+            DailyReflection.self,
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 
