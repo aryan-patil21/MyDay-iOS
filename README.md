@@ -57,6 +57,16 @@ Built entirely with Apple's first-party modern frameworks, MyDay adheres strictl
 
 ---
 
+## 📚 Product & Engineering Documentation
+
+MyDay includes enterprise-grade product and technical specifications developed via reverse engineering:
+
+- [📄 **Business Requirements Document (BRD)**](docs/BRD.md): Business vision, market differentiation, personas, ROI, and privacy moat.
+- [📋 **Product Requirements Document (PRD)**](docs/PRD.md): End-to-end user journeys, functional requirements (FR-1 through FR-8), and NFRs.
+- [🏗️ **Software Requirements & Architecture Document (SRD)**](docs/SRD.md): Full technical architecture, SwiftData schema, NaturalLanguage formulas, and concurrency patterns.
+
+---
+
 ## 🏛 Architecture & Engineering Design
 
 MyDay follows a **Feature-First Model-View (MV) Architecture** optimized for modern SwiftUI and SwiftData:
@@ -87,9 +97,18 @@ MyDay/
 │       ├── JournalView.swift
 │       ├── NewReflectionSheet.swift
 │       └── ReflectionCardView.swift
-└── Services/                        # Centralized system & intelligence services
-    ├── NotificationManager.swift    # @MainActor singleton for UserNotifications
-    └── InsightsService.swift        # NaturalLanguage sentiment & correlation analytics
+├── Services/                        # Centralized system & intelligence services
+│   ├── NotificationManager.swift    # @MainActor singleton for UserNotifications
+│   ├── InsightsService.swift        # NaturalLanguage sentiment & correlation analytics
+│   └── BackupService.swift          # JSON serialization & restore service
+├── MyDayTests/
+│   └── MyDayTests.swift             # Swift Testing suite (streaks, sentiment, math)
+├── MyDayWidget/
+│   └── MyDayWidget.swift            # WidgetKit TimelineProvider and widget views
+└── docs/
+    ├── BRD.md                       # Business Requirements Document
+    ├── PRD.md                       # Product Requirements Document
+    └── SRD.md                       # Software Requirements Document
 ```
 
 ### Data Flow Diagram
