@@ -18,6 +18,11 @@ struct DashboardView: View {
     @State private var showingReflectionSheet = false
     @State private var showingNewTaskSheet = false
     @State private var showingSettingsSheet = false
+    @State private var showingInsightsDetailSheet = false
+    
+    private var insights: [InsightItem] {
+        InsightsService.shared.generateInsights(tasks: tasks, habits: habits, reflections: reflections)
+    }
     
     // Computed Time-of-Day Greeting
     private var greeting: String {
@@ -86,13 +91,18 @@ struct DashboardView: View {
                     // 2. Daily Momentum Card
                     dailyMomentumCard
                     
-                    // 3. Habits Quick Strip
+                    // 3. AI Insights Card
+                    InsightsCardView(insights: insights) {
+                        showingInsightsDetailSheet = true
+                    }
+                    
+                    // 4. Habits Quick Strip
                     habitsSection
                     
-                    // 4. Focus Tasks Section
+                    // 5. Focus Tasks Section
                     focusTasksSection
                     
-                    // 5. Daily Reflection Card
+                    // 6. Daily Reflection Card
                     reflectionSection
                 }
                 .padding(.horizontal, 16)
@@ -117,6 +127,9 @@ struct DashboardView: View {
             }
             .sheet(isPresented: $showingSettingsSheet) {
                 SettingsSheet()
+            }
+            .sheet(isPresented: $showingInsightsDetailSheet) {
+                InsightsDetailSheet(tasks: tasks, habits: habits, reflections: reflections)
             }
         }
     }
