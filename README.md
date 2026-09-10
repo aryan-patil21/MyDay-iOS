@@ -1,4 +1,4 @@
-# MyDay ☀️
+# MyDay 
 
 > **A native, local-first iOS lifestyle companion engineered with SwiftUI, SwiftData, UserNotifications, and Apple's on-device NaturalLanguage framework.**
 
@@ -10,7 +10,7 @@
 
 ---
 
-## 🌟 Overview
+##  Overview
 
 **MyDay** is designed to bridge intentional daily planning with mindful self-reflection. Rather than treating to-do lists, habit trackers, and journals as fragmented utilities, MyDay unifies them into a cohesive **daily command center** that adapts to your routine and provides privacy-preserving on-device lifestyle intelligence.
 
@@ -18,56 +18,56 @@ Built entirely with Apple's first-party modern frameworks, MyDay adheres strictl
 
 ---
 
-## 🚀 Key Features
+##  Key Features include:
 
-### 1. ☀️ Unified "Today" Dashboard
+### 1. Unified "Today" Dashboard
 - **Dynamic Context-Aware Greetings:** Adapts dynamically to morning, afternoon, and evening with corresponding iconography and formatted calendar dates.
 - **Daily Momentum Ring:** Aggregates habits checked, focus tasks completed, and mindfulness check-in status into a real-time progress indicator.
 - **Habits Quick-Strip:** Horizontal carousel providing 1-tap check-in with spring physics and responsive sensory haptics.
 - **Focus Tasks:** Surfaces top pending items due today with inline strikethrough completion toggles.
 - **Mood & Reflection Snapshot:** Displays daily emotional highlights or provides a 1-tap prompt to log feelings.
 
-### 2. 📋 Daily Tasks Engine
+### 2.  Daily Tasks Engine
 - Priority-ranked task management (`High`, `Medium`, `Low`) with color-coded capsule badges.
 - Native `NavigationStack` with search bar filtering and sectioning (`Pending` vs `Completed`).
 - Modal `Form` creation with full date-time scheduling and multi-line notes.
 - Native swipe-to-delete and interactive circular checkmarks.
 
-### 3. 🔥 Habits & Consistency Engine
+### 3.  Habits & Consistency Engine
 - Daily routine builder with custom icon selection (12 curated SF Symbols) and 7 vibrant iOS theme colors.
 - Calendar-accurate streak calculation utilizing `Calendar.current.startOfDay` to track unbroken consistency.
 - Interactive daily progress card with celebratory motivational states.
 
-### 4. 📖 Mindfulness & Daily Reflection
+### 4.  Mindfulness & Daily Reflection
 - Quick emotional check-in with 5 expressive mood states: `😄 Great`, `🙂 Good`, `😐 Neutral`, `😔 Down`, and `😣 Stressed`.
 - Multi-select feeling tags (`Grateful`, `Productive`, `Relaxed`, `Energetic`, etc.) with responsive color adaptation.
 - Multi-line gratitude journaling using modern `TextField(axis: .vertical)`.
 - Reverse-chronological reflection timeline with formatted timestamps.
 
-### 5. 🔔 Local Notifications & Reminders
+### 5.  Local Notifications & Reminders
 - Background scheduling using Apple's `UserNotifications` framework (`UNUserNotificationCenter`).
 - Specific due-date task reminders triggered via `UNCalendarNotificationTrigger`.
 - Optional recurring daily evening reflection reminder (e.g., 8:30 PM).
 - Automatic cancellation of pending alerts upon task completion or deletion.
 
-### 6. 🧠 On-Device AI & Personal Insights
+### 6.  On-Device AI & Personal Insights
 - **Sentiment Analysis:** Utilizes Apple's native `NaturalLanguage` framework (`NLTagger(tagSchemes: [.sentimentScore])`) running directly on Apple Silicon's Neural Engine.
 - **Habit-Mood Correlation:** Computes empirical conditional probabilities correlating completed habits with positive mood reports.
 - **Streak & Productivity Patterns:** Detects consistency trends and milestone achievements without sending a single byte off-device.
 
 ---
 
-## 📚 Product & Engineering Documentation
+##  Product & Engineering Documentation
 
 MyDay includes enterprise-grade product and technical specifications developed via reverse engineering:
 
-- [📄 **Business Requirements Document (BRD)**](docs/BRD.md): Business vision, market differentiation, personas, ROI, and privacy moat.
-- [📋 **Product Requirements Document (PRD)**](docs/PRD.md): End-to-end user journeys, functional requirements (FR-1 through FR-8), and NFRs.
-- [🏗️ **Software Requirements & Architecture Document (SRD)**](docs/SRD.md): Full technical architecture, SwiftData schema, NaturalLanguage formulas, and concurrency patterns.
+- [ **Business Requirements Document (BRD)**](docs/BRD.md): Business vision, market differentiation, personas, ROI, and privacy moat.
+- [ **Product Requirements Document (PRD)**](docs/PRD.md): End-to-end user journeys, functional requirements (FR-1 through FR-8), and NFRs.
+- [ **Software Requirements & Architecture Document (SRD)**](docs/SRD.md): Full technical architecture, SwiftData schema, NaturalLanguage formulas, and concurrency patterns.
 
 ---
 
-## 🏛 Architecture & Engineering Design
+##  Architecture & Engineering Design
 
 MyDay follows a **Feature-First Model-View (MV) Architecture** optimized for modern SwiftUI and SwiftData:
 
@@ -156,7 +156,7 @@ In an era of cloud-hosted analytics and invasive telemetry, **MyDay is fundament
 
 ---
 
-## 🛠 Tech Stack & Requirements
+##  Tech Stack & Requirements
 
 | Specification | Requirement |
 | :--- | :--- |
@@ -189,7 +189,7 @@ In an era of cloud-hosted analytics and invasive telemetry, **MyDay is fundament
 
 ---
 
-## 👨‍💻 Author
+##  Author
 
 **Aryan Patil**  
 *Bachelor's Student in Artificial Intelligence & Data Science*  
