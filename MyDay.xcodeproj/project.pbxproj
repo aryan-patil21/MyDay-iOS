@@ -6,6 +6,12 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		18F25B403052619F00B866CE /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18F25B3F3052619F00B866CE /* WidgetKit.framework */; };
+		18F25B423052619F00B866CE /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18F25B413052619F00B866CE /* SwiftUI.framework */; };
+		18F25B4F305261A100B866CE /* MyDayWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 18F25B3D3052619F00B866CE /* MyDayWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		18F25B3230514F6000B866CE /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -14,12 +20,46 @@
 			remoteGlobalIDString = 1873367830507349000A8970;
 			remoteInfo = MyDay;
 		};
+		18F25B4D305261A100B866CE /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1873367130507349000A8970 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 18F25B3C3052619F00B866CE;
+			remoteInfo = MyDayWidgetExtension;
+		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		18F25B54305261A100B866CE /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				18F25B4F305261A100B866CE /* MyDayWidgetExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		1873367930507349000A8970 /* MyDay.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyDay.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		18F25B2E30514F6000B866CE /* MyDayTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MyDayTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		18F25B3D3052619F00B866CE /* MyDayWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = MyDayWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		18F25B3F3052619F00B866CE /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		18F25B413052619F00B866CE /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		18F25B50305261A100B866CE /* Exceptions for "MyDayWidget" folder in "MyDayWidgetExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 18F25B3C3052619F00B866CE /* MyDayWidgetExtension */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		1873367B30507349000A8970 /* MyDay */ = {
@@ -30,6 +70,14 @@
 		18F25B2F30514F6000B866CE /* MyDayTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = MyDayTests;
+			sourceTree = "<group>";
+		};
+		18F25B433052619F00B866CE /* MyDayWidget */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				18F25B50305261A100B866CE /* Exceptions for "MyDayWidget" folder in "MyDayWidgetExtension" target */,
+			);
+			path = MyDayWidget;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -49,6 +97,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		18F25B3A3052619F00B866CE /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				18F25B423052619F00B866CE /* SwiftUI.framework in Frameworks */,
+				18F25B403052619F00B866CE /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -57,6 +114,8 @@
 			children = (
 				1873367B30507349000A8970 /* MyDay */,
 				18F25B2F30514F6000B866CE /* MyDayTests */,
+				18F25B433052619F00B866CE /* MyDayWidget */,
+				18F25B3E3052619F00B866CE /* Frameworks */,
 				1873367A30507349000A8970 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -66,8 +125,18 @@
 			children = (
 				1873367930507349000A8970 /* MyDay.app */,
 				18F25B2E30514F6000B866CE /* MyDayTests.xctest */,
+				18F25B3D3052619F00B866CE /* MyDayWidgetExtension.appex */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		18F25B3E3052619F00B866CE /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				18F25B3F3052619F00B866CE /* WidgetKit.framework */,
+				18F25B413052619F00B866CE /* SwiftUI.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -80,10 +149,12 @@
 				1873367530507349000A8970 /* Sources */,
 				1873367630507349000A8970 /* Frameworks */,
 				1873367730507349000A8970 /* Resources */,
+				18F25B54305261A100B866CE /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				18F25B4E305261A100B866CE /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				1873367B30507349000A8970 /* MyDay */,
@@ -118,6 +189,28 @@
 			productReference = 18F25B2E30514F6000B866CE /* MyDayTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		18F25B3C3052619F00B866CE /* MyDayWidgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 18F25B51305261A100B866CE /* Build configuration list for PBXNativeTarget "MyDayWidgetExtension" */;
+			buildPhases = (
+				18F25B393052619F00B866CE /* Sources */,
+				18F25B3A3052619F00B866CE /* Frameworks */,
+				18F25B3B3052619F00B866CE /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				18F25B433052619F00B866CE /* MyDayWidget */,
+			);
+			name = MyDayWidgetExtension;
+			packageProductDependencies = (
+			);
+			productName = MyDayWidgetExtension;
+			productReference = 18F25B3D3052619F00B866CE /* MyDayWidgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -134,6 +227,9 @@
 					18F25B2D30514F6000B866CE = {
 						CreatedOnToolsVersion = 26.6;
 						TestTargetID = 1873367830507349000A8970;
+					};
+					18F25B3C3052619F00B866CE = {
+						CreatedOnToolsVersion = 26.6;
 					};
 				};
 			};
@@ -153,6 +249,7 @@
 			targets = (
 				1873367830507349000A8970 /* MyDay */,
 				18F25B2D30514F6000B866CE /* MyDayTests */,
+				18F25B3C3052619F00B866CE /* MyDayWidgetExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -166,6 +263,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		18F25B2C30514F6000B866CE /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		18F25B3B3052619F00B866CE /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -189,6 +293,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		18F25B393052619F00B866CE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -196,6 +307,11 @@
 			isa = PBXTargetDependency;
 			target = 1873367830507349000A8970 /* MyDay */;
 			targetProxy = 18F25B3230514F6000B866CE /* PBXContainerItemProxy */;
+		};
+		18F25B4E305261A100B866CE /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 18F25B3C3052619F00B866CE /* MyDayWidgetExtension */;
+			targetProxy = 18F25B4D305261A100B866CE /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -431,6 +547,64 @@
 			};
 			name = Release;
 		};
+		18F25B52305261A100B866CE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = MyDayWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = MyDayWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.aryan.MyDay.MyDayWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		18F25B53305261A100B866CE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = MyDayWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = MyDayWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.aryan.MyDay.MyDayWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -457,6 +631,15 @@
 			buildConfigurations = (
 				18F25B3430514F6000B866CE /* Debug */,
 				18F25B3530514F6000B866CE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		18F25B51305261A100B866CE /* Build configuration list for PBXNativeTarget "MyDayWidgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				18F25B52305261A100B866CE /* Debug */,
+				18F25B53305261A100B866CE /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

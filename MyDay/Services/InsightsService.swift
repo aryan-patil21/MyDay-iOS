@@ -50,6 +50,7 @@ struct HabitCorrelation: Identifiable {
     let totalCompletedDays: Int
 }
 
+@MainActor
 final class InsightsService {
     static let shared = InsightsService()
     
@@ -57,19 +58,75 @@ final class InsightsService {
     
     // MARK: - NaturalLanguage Sentiment Analysis
     
-    /// Analyzes the sentiment of given text on a scale from -1.0 (very negative) to +1.0 (very positive)
+    /// Analyzes sentiment using Apple's NLTagger across sentence boundaries to prevent single-token bias.
     func analyzeSentiment(of text: String) -> Double {
-        guard !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return 0.0 }
+        let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return 0.0 }
         
         let tagger = NLTagger(tagSchemes: [.sentimentScore])
-        tagger.string = text
+        tagger.string = trimmed
         
-        let (sentimentTag, _) = tagger.tag(at: text.startIndex, unit: .paragraph, scheme: .sentimentScore)
-        if let sentimentScoreString = sentimentTag?.rawValue,
-           let score = Double(sentimentScoreString) {
+        var sentenceScores: [Double] = []
+        tagger.enumerateTags(
+            in: trimmed.startIndex..<trimmed.endIndex,
+            unit: .sentence,
+            scheme: .sentimentScore
+        ) { tag, _ in
+            if let tagValue = tag?.rawValue, let score = Double(tagValue) {
+                sentenceScores.append(score)
+            }
+            return true
+        }
+        
+        if !sentenceScores.isEmpty {
+            return sentenceScores.reduce(0.0, +) / Double(sentenceScores.count)
+        }
+        
+        let (paragraphTag, _) = tagger.tag(at: trimmed.startIndex, unit: .paragraph, scheme: .sentimentScore)
+        if let scoreString = paragraphTag?.rawValue, let score = Double(scoreString) {
             return score
         }
         return 0.0
+    }
+    
+    /// Calibrated, holistic sentiment score that blends:
+    /// 1. User's explicit Mood selection (50% weight)
+    /// 2. Selected Feeling Tags (20% weight)
+    /// 3. On-device NLTagger text analysis (30% weight)
+    /// This resolves Apple NLTagger's strong negative bias on casual, factual daily journaling.
+    func sentiment(for reflection: DailyReflection) -> Double {
+        let trimmedText = reflection.entryText.trimmingCharacters(in: .whitespacesAndNewlines)
+        let hasText = !trimmedText.isEmpty
+        let nlpScore = hasText ? analyzeSentiment(of: trimmedText) : 0.0
+        
+        // 1. Mood Baseline
+        let moodBaseline: Double
+        switch reflection.mood {
+        case .great:    moodBaseline = 0.85
+        case .good:     moodBaseline = 0.50
+        case .neutral:  moodBaseline = 0.05
+        case .down:     moodBaseline = -0.50
+        case .stressed: moodBaseline = -0.75
+        }
+        
+        // 2. Feeling Tags Modifier
+        var tagModifier = 0.0
+        let positiveTags: Set<String> = ["Grateful", "Productive", "Relaxed", "Energetic", "Inspired"]
+        let negativeTags: Set<String> = ["Anxious", "Tired", "Busy", "Stressed"]
+        for tag in reflection.tags {
+            if positiveTags.contains(tag) { tagModifier += 0.08 }
+            if negativeTags.contains(tag) { tagModifier -= 0.08 }
+        }
+        tagModifier = max(-0.25, min(0.25, tagModifier))
+        
+        // 3. Blended Synthesis
+        if hasText {
+            let combined = (moodBaseline * 0.50) + tagModifier + (nlpScore * 0.30)
+            return max(-1.0, min(1.0, combined))
+        } else {
+            let combined = (moodBaseline * 0.80) + tagModifier
+            return max(-1.0, min(1.0, combined))
+        }
     }
     
     // MARK: - Generate Dynamic Insights
@@ -81,27 +138,28 @@ final class InsightsService {
     ) -> [InsightItem] {
         var items: [InsightItem] = []
         
-        // 1. Reflection Sentiment Insight
-        if let latestReflection = reflections.first, !latestReflection.entryText.isEmpty {
-            let score = analyzeSentiment(of: latestReflection.entryText)
+        // 1. Reflection Sentiment Insight (Focuses on latest logged reflection)
+        if let latestReflection = reflections.first {
+            let score = sentiment(for: latestReflection)
             if score > 0.15 {
-                let scoreInt = Int(abs(score) * 100)
+                let formattedScore = String(format: "%+.2f", score)
                 items.append(InsightItem(
                     category: .sentiment,
                     title: "Positive Reflection Tone",
-                    message: "Your latest journal entry reflects an optimistic mindset (+0.\(scoreInt) sentiment score). Keep nurturing this positive energy!"
+                    message: "Your latest reflection reflects an optimistic mindset (\(formattedScore) sentiment). Keep nurturing this positive energy!"
                 ))
             } else if score < -0.15 {
+                let formattedScore = String(format: "%+.2f", score)
                 items.append(InsightItem(
                     category: .sentiment,
                     title: "Mindful Support",
-                    message: "Your latest reflection touches on difficult feelings. Remember to give yourself grace and celebrate small wins today."
+                    message: "Your latest reflection touches on difficult feelings (\(formattedScore) sentiment). Remember to give yourself grace and celebrate small wins."
                 ))
             } else {
                 items.append(InsightItem(
                     category: .sentiment,
                     title: "Balanced Perspective",
-                    message: "Your journal entries reflect a calm and grounded state of mind today."
+                    message: "Your latest reflection reflects a calm and grounded state of mind today."
                 ))
             }
         }
@@ -158,7 +216,6 @@ final class InsightsService {
         let calendar = Calendar.current
         var correlations: [HabitCorrelation] = []
         
-        // Map normalized dates to reflections
         var reflectionByDay: [Date: DailyReflection] = [:]
         for reflection in reflections {
             let day = calendar.startOfDay(for: reflection.date)
@@ -194,7 +251,6 @@ final class InsightsService {
             if matchedDays > 0 {
                 percentage = Int((Double(positiveCount) / Double(matchedDays)) * 100)
             } else {
-                // Initial positive baseline for completed habits
                 percentage = 85
             }
             
@@ -210,12 +266,10 @@ final class InsightsService {
         return correlations.sorted { $0.positiveDaysPercentage > $1.positiveDaysPercentage }
     }
     
+    /// Calculates the average calibrated sentiment across all reflections
     func averageSentiment(of reflections: [DailyReflection]) -> Double {
-        let scores = reflections.compactMap { ref -> Double? in
-            guard !ref.entryText.isEmpty else { return nil }
-            return analyzeSentiment(of: ref.entryText)
-        }
-        guard !scores.isEmpty else { return 0.0 }
-        return scores.reduce(0.0, +) / Double(scores.count)
+        guard !reflections.isEmpty else { return 0.0 }
+        let total = reflections.reduce(0.0) { $0 + sentiment(for: $1) }
+        return total / Double(reflections.count)
     }
 }

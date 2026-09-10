@@ -22,6 +22,15 @@ struct InsightsDetailSheet: View {
         InsightsService.shared.calculateHabitCorrelations(habits: habits, reflections: reflections)
     }
     
+    private var latestReflection: DailyReflection? {
+        reflections.first
+    }
+    
+    private var latestSentiment: Double {
+        guard let latest = latestReflection else { return 0.0 }
+        return InsightsService.shared.sentiment(for: latest)
+    }
+    
     private var avgSentiment: Double {
         InsightsService.shared.averageSentiment(of: reflections)
     }
@@ -54,25 +63,63 @@ struct InsightsDetailSheet: View {
                 }
                 
                 // Section 2: Sentiment Analysis Gauge
-                Section("Reflection Sentiment (NaturalLanguage)") {
-                    VStack(alignment: .leading, spacing: 10) {
-                        HStack {
-                            Text("Average Sentiment Score")
-                                .font(.subheadline)
-                            Spacer()
-                            Text(String(format: "%+.2f", avgSentiment))
-                                .font(.headline)
-                                .foregroundStyle(sentimentColor(for: avgSentiment))
+                Section("Reflection Sentiment (On-Device AI)") {
+                    if let latest = latestReflection {
+                        VStack(alignment: .leading, spacing: 12) {
+                            // Latest check-in row
+                            HStack {
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text("Latest Check-In")
+                                        .font(.subheadline.bold())
+                                    HStack(spacing: 4) {
+                                        Text(latest.mood.emoji)
+                                        Text(latest.mood.rawValue)
+                                            .font(.caption)
+                                            .foregroundStyle(latest.mood.color)
+                                        if !latest.tags.isEmpty {
+                                            Text("• \(latest.tags.joined(separator: ", "))")
+                                                .font(.caption2)
+                                                .foregroundStyle(.secondary)
+                                                .lineLimit(1)
+                                        }
+                                    }
+                                }
+                                
+                                Spacer()
+                                
+                                Text(String(format: "%+.2f", latestSentiment))
+                                    .font(.title3.bold())
+                                    .foregroundStyle(sentimentColor(for: latestSentiment))
+                            }
+                            
+                            ProgressView(value: max(0.0, min(1.0, (latestSentiment + 1.0) / 2.0)))
+                                .tint(sentimentColor(for: latestSentiment))
+                            
+                            Text(sentimentDescription(for: latestSentiment))
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                            
+                            Divider()
+                                .padding(.vertical, 2)
+                            
+                            // Historical Average
+                            HStack {
+                                Text("All-Time Average (\(reflections.count) entries)")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                                Spacer()
+                                Text(String(format: "%+.2f", avgSentiment))
+                                    .font(.subheadline.bold())
+                                    .foregroundStyle(sentimentColor(for: avgSentiment))
+                            }
                         }
-                        
-                        ProgressView(value: max(0.0, min(1.0, (avgSentiment + 1.0) / 2.0)))
-                            .tint(sentimentColor(for: avgSentiment))
-                        
-                        Text(sentimentDescription(for: avgSentiment))
+                        .padding(.vertical, 4)
+                    } else {
+                        Text("No reflections logged yet. Log your first reflection in the Journal tab to see your emotional trends!")
                             .font(.caption)
                             .foregroundStyle(.secondary)
+                            .padding(.vertical, 4)
                     }
-                    .padding(.vertical, 4)
                 }
                 
                 // Section 3: Habit Impact Matrix
@@ -151,11 +198,15 @@ struct InsightsDetailSheet: View {
     
     private func sentimentDescription(for score: Double) -> String {
         if score > 0.2 {
-            return "Your journal entries show strong positive emotional valence (+1.0 max)."
+            return "Your reflection demonstrates a strong positive, constructive mindset."
         } else if score < -0.2 {
-            return "Your reflections indicate moments of stress or challenge (-1.0 min)."
+            return "Your reflection indicates feelings of fatigue or stress. Prioritize self-care."
         } else {
-            return "Your reflections reflect a balanced, neutral tone."
+            return "Your reflection demonstrates a balanced, grounded emotional state."
         }
     }
+}
+
+#Preview {
+    InsightsDetailSheet(tasks: [], habits: [], reflections: [])
 }

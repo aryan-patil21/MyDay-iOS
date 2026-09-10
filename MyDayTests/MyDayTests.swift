@@ -9,6 +9,7 @@ import Testing
 import Foundation
 @testable import MyDay
 
+@MainActor
 struct MyDayTests {
 
     // MARK: - Habit Streak Engine Tests
@@ -73,6 +74,41 @@ struct MyDayTests {
         
         #expect(emptyScore == 0.0)
         #expect(whitespaceScore == 0.0)
+    }
+
+    // MARK: - Calibrated Reflection Sentiment Tests
+
+    @Test func reflectionSentimentGreatMoodWithProductiveTagIsPositive() async throws {
+        let reflection = DailyReflection(
+            mood: .great,
+            tags: ["Productive", "Grateful"],
+            entryText: "Worked on my project, feeling good about our progress!"
+        )
+        let score = InsightsService.shared.sentiment(for: reflection)
+        
+        #expect(score > 0.5, "A Great mood check-in with positive tags must yield a strong positive score.")
+    }
+
+    @Test func reflectionSentimentStressedMoodIsNegative() async throws {
+        let reflection = DailyReflection(
+            mood: .stressed,
+            tags: ["Anxious", "Tired"],
+            entryText: "Too many deadlines piling up and feeling exhausted."
+        )
+        let score = InsightsService.shared.sentiment(for: reflection)
+        
+        #expect(score < -0.4, "A Stressed mood check-in must yield a negative score.")
+    }
+
+    @Test func reflectionSentimentCasualGoodDayDoesNotGetStuckAtNegative() async throws {
+        let reflection = DailyReflection(
+            mood: .good,
+            tags: ["Productive"],
+            entryText: "Worked on my project, feeling okay."
+        )
+        let score = InsightsService.shared.sentiment(for: reflection)
+        
+        #expect(score > 0.1, "Casual, normal text with Good mood should produce a positive score, never -0.6.")
     }
 
     // MARK: - Habit Correlation Math Tests

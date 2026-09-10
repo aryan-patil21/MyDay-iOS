@@ -2,7 +2,7 @@
 //  MyDayWidget.swift
 //  MyDayWidget
 //
-//  Created by Apple on 09/09/26.
+//  Created by Apple on 10/09/26.
 //
 
 import WidgetKit
@@ -68,7 +68,6 @@ struct Provider: TimelineProvider {
             topHabitStreak: 7
         )
 
-        // Refresh every hour
         let nextUpdateDate = Calendar.current.date(byAdding: .hour, value: 1, to: currentDate) ?? currentDate
         let timeline = Timeline(entries: [entry], policy: .after(nextUpdateDate))
         completion(timeline)
@@ -127,7 +126,6 @@ struct MyDayWidgetEntryView: View {
                     .lineLimit(1)
             }
         }
-        .padding(12)
         .containerBackground(for: .widget) {
             Color(uiColor: .systemBackground)
         }
@@ -191,16 +189,14 @@ struct MyDayWidgetEntryView: View {
                     .lineLimit(1)
             }
         }
-        .padding(14)
         .containerBackground(for: .widget) {
             Color(uiColor: .systemBackground)
         }
     }
 }
 
-// MARK: - Widget Bundle Configuration
+// MARK: - Widget Definition
 
-@main
 struct MyDayWidget: Widget {
     let kind: String = "MyDayWidget"
 
