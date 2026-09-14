@@ -50,7 +50,7 @@ Built entirely with Apple's first-party modern frameworks, MyDay adheres strictl
 - Optional recurring daily evening reflection reminder (e.g., 8:30 PM).
 - Automatic cancellation of pending alerts upon task completion or deletion.
 
-### 6. 🧠 On-Device AI & Personal Insights
+### 6.  On-Device AI & Personal Insights
 - **Sentiment Analysis:** Utilizes Apple's native `NaturalLanguage` framework (`NLTagger(tagSchemes: [.sentimentScore])`) running directly on Apple Silicon's Neural Engine.
 - **Habit-Mood Correlation:** Computes empirical conditional probabilities correlating completed habits with positive mood reports.
 - **Streak & Productivity Patterns:** Detects consistency trends and milestone achievements without sending a single byte off-device.
@@ -64,7 +64,7 @@ Built entirely with Apple's first-party modern frameworks, MyDay adheres strictl
 
 ---
 
-## 📚 Product & Engineering Documentation
+##  Product & Engineering Documentation
 
 MyDay includes enterprise-grade product and technical specifications developed via reverse engineering:
 
@@ -74,7 +74,7 @@ MyDay includes enterprise-grade product and technical specifications developed v
 
 ---
 
-## 🏛 Architecture & Engineering Design
+##  Architecture & Engineering Design
 
 MyDay follows a **Feature-First Model-View (MV) Architecture** optimized for modern SwiftUI and SwiftData:
 
@@ -159,7 +159,7 @@ graph TD
 
 ---
 
-## 🔒 Privacy & Local-First Design
+##  Privacy & Local-First Design
 
 In an era of cloud-hosted analytics and invasive telemetry, **MyDay is fundamentally offline-first**:
 
