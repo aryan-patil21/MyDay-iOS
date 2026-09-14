@@ -50,24 +50,31 @@ Built entirely with Apple's first-party modern frameworks, MyDay adheres strictl
 - Optional recurring daily evening reflection reminder (e.g., 8:30 PM).
 - Automatic cancellation of pending alerts upon task completion or deletion.
 
-### 6.  On-Device AI & Personal Insights
+### 6. 🧠 On-Device AI & Personal Insights
 - **Sentiment Analysis:** Utilizes Apple's native `NaturalLanguage` framework (`NLTagger(tagSchemes: [.sentimentScore])`) running directly on Apple Silicon's Neural Engine.
 - **Habit-Mood Correlation:** Computes empirical conditional probabilities correlating completed habits with positive mood reports.
 - **Streak & Productivity Patterns:** Detects consistency trends and milestone achievements without sending a single byte off-device.
 
+### 7. 🎙️ Apple App Intents & Siri Shortcuts
+- **Hands-Free Siri Voice Queries:** Ask *"What's my MyDay momentum?"* for an instant spoken breakdown of your daily progress.
+- **Voice Habit Completion:** Say *"Hey Siri, complete habit in MyDay"* to check off habits and hear your updated streak.
+- **Hands-Free Task Creation:** Say *"Add task to MyDay"* to quickly capture to-dos with voice dictation.
+- **Zero-Config App Shortcuts:** Pre-registers voice phrases via `AppShortcutsProvider` so Siri recognizes them instantly with zero user setup.
+- **Apple Shortcuts App & Automations:** Build morning routines, NFC-triggered habit check-ins, or time-based automations.
+
 ---
 
-##  Product & Engineering Documentation
+## 📚 Product & Engineering Documentation
 
 MyDay includes enterprise-grade product and technical specifications developed via reverse engineering:
 
-- [ **Business Requirements Document (BRD)**](docs/BRD.md): Business vision, market differentiation, personas, ROI, and privacy moat.
-- [ **Product Requirements Document (PRD)**](docs/PRD.md): End-to-end user journeys, functional requirements (FR-1 through FR-8), and NFRs.
-- [ **Software Requirements & Architecture Document (SRD)**](docs/SRD.md): Full technical architecture, SwiftData schema, NaturalLanguage formulas, and concurrency patterns.
+- [📄 **Business Requirements Document (BRD)**](docs/BRD.md): Business vision, market differentiation, personas, ROI, and privacy moat.
+- [📋 **Product Requirements Document (PRD)**](docs/PRD.md): End-to-end user journeys, functional requirements (FR-1 through FR-8), and NFRs.
+- [🏗️ **Software Requirements & Architecture Document (SRD)**](docs/SRD.md): Full technical architecture, SwiftData schema, NaturalLanguage formulas, and concurrency patterns.
 
 ---
 
-##  Architecture & Engineering Design
+## 🏛 Architecture & Engineering Design
 
 MyDay follows a **Feature-First Model-View (MV) Architecture** optimized for modern SwiftUI and SwiftData:
 
@@ -75,10 +82,17 @@ MyDay follows a **Feature-First Model-View (MV) Architecture** optimized for mod
 MyDay/
 ├── App/
 │   └── MyDayApp.swift               # @main entry point, ModelContainer schema setup
-├── Models/                          # SwiftData @Model entities & domain enums
+├── Models/                          # SwiftData @Model entities & database container
+│   ├── AppDatabase.swift            # Centralized thread-safe ModelContainer singleton
 │   ├── TaskItem.swift               # Task entity, Priority enum (Codable, Identifiable)
 │   ├── Habit.swift                  # Habit entity, streak logic, Calendar operations
 │   └── DailyReflection.swift        # Reflection entity, Mood enum, feeling tags
+├── Intents/                         # Apple App Intents & Siri Shortcuts
+│   ├── HabitEntity.swift            # AppEntity & EntityQuery for dynamic habit voice matching
+│   ├── CompleteHabitIntent.swift    # Voice habit completion intent
+│   ├── GetDailyMomentumIntent.swift # Voice momentum query intent
+│   ├── AddTaskIntent.swift          # Hands-free task capture intent
+│   └── MyDayShortcuts.swift         # AppShortcutsProvider registering voice triggers
 ├── Features/                        # Domain features grouped by functional slice
 │   ├── Dashboard/                   # Today command center, settings, insights card & modal
 │   │   ├── DashboardView.swift
@@ -102,7 +116,7 @@ MyDay/
 │   ├── InsightsService.swift        # NaturalLanguage sentiment & correlation analytics
 │   └── BackupService.swift          # JSON serialization & restore service
 ├── MyDayTests/
-│   └── MyDayTests.swift             # Swift Testing suite (streaks, sentiment, math)
+│   └── MyDayTests.swift             # Swift Testing suite (streaks, sentiment, intents)
 ├── MyDayWidget/
 │   └── MyDayWidget.swift            # WidgetKit TimelineProvider and widget views
 └── docs/

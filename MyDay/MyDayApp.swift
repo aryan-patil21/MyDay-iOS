@@ -7,28 +7,23 @@
 
 import SwiftUI
 import SwiftData
+import AppIntents
 
 @main
 struct MyDayApp: App {
-    var sharedModelContainer: ModelContainer = {
-        let schema = Schema([
-            TaskItem.self,
-            Habit.self,
-            DailyReflection.self,
-        ])
-        let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
+    private let database = AppDatabase.shared
 
-        do {
-            return try ModelContainer(for: schema, configurations: [modelConfiguration])
-        } catch {
-            fatalError("Could not create ModelContainer: \(error)")
-        }
-    }()
+    init() {
+        // Required by Apple: registers MyDayShortcuts with iOS Siri & Shortcuts system.
+        // Without this call, the OS cannot discover our AppShortcutsProvider and will
+        // show "Unable to run App Shortcut" errors.
+        MyDayShortcuts.updateAppShortcutParameters()
+    }
 
     var body: some Scene {
         WindowGroup {
             ContentView()
         }
-        .modelContainer(sharedModelContainer)
+        .modelContainer(database.container)
     }
 }

@@ -7,6 +7,8 @@
 
 import Testing
 import Foundation
+import SwiftData
+import AppIntents
 @testable import MyDay
 
 @MainActor
@@ -128,5 +130,29 @@ struct MyDayTests {
         let correlation = try #require(correlations.first)
         #expect(correlation.habitTitle == "Meditation")
         #expect(correlation.positiveDaysPercentage == 100)
+    }
+
+    // MARK: - App Intents Tests
+
+    @Test func addTaskIntentInsertsNewTask() async throws {
+        let intent = AddTaskIntent()
+        intent.title = "Buy Coffee Beans"
+        intent.isHighPriority = true
+        
+        let result = try await intent.perform()
+        let value = try #require(result.value)
+        #expect(value == "Buy Coffee Beans")
+        
+        let context = AppDatabase.shared.mainContext
+        let descriptor = FetchDescriptor<TaskItem>(predicate: #Predicate { $0.title == "Buy Coffee Beans" })
+        let found = try #require(try context.fetch(descriptor).first)
+        #expect(found.priority == .high)
+    }
+
+    @Test func getDailyMomentumIntentExecutesCleanly() async throws {
+        let intent = GetDailyMomentumIntent()
+        let result = try await intent.perform()
+        let value = try #require(result.value)
+        #expect(value >= 0 && value <= 100)
     }
 }
