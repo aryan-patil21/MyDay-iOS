@@ -143,32 +143,47 @@ MyDay/
 
 ```mermaid
 graph TD
-    subgraph UI Layer [SwiftUI Views]
+    subgraph UI_Layer ["UI Layer (SwiftUI Views)"]
         Dashboard["DashboardView"]
         Tasks["TaskListView"]
         Habits["HabitsView"]
         Journal["JournalView"]
+        Analytics["AnalyticsTrendsView"]
     end
 
-    subgraph Reactive State [@Query & @Environment]
+    subgraph State_Layer ["Reactive State (Query & ModelContext)"]
         Context["ModelContext (SQLite Engine)"]
     end
 
-    subgraph Data Models [SwiftData @Model]
+    subgraph Data_Models ["Data Models (SwiftData)"]
         T["TaskItem"]
         H["Habit"]
         R["DailyReflection"]
     end
 
-    subgraph Native Services [System Services]
+    subgraph Services_Layer ["System Services & On-Device AI"]
         NM["NotificationManager (UserNotifications)"]
         IS["InsightsService (NaturalLanguage)"]
+        SR["SpeechRecognizer (Speech & AVFoundation)"]
     end
 
-    Context --> T & H & R
-    T & H & R -->|Live @Query Subscriptions| Dashboard & Tasks & Habits & Journal
-    Dashboard & Tasks -->|Schedule / Cancel| NM
-    Dashboard & Journal -->|Sentiment & Correlation| IS
+    Context --> T
+    Context --> H
+    Context --> R
+    T --> Dashboard
+    H --> Dashboard
+    R --> Dashboard
+    T --> Tasks
+    H --> Habits
+    R --> Journal
+    T --> Analytics
+    H --> Analytics
+    R --> Analytics
+    Journal --> SR
+    Dashboard --> NM
+    Tasks --> NM
+    Dashboard --> IS
+    Journal --> IS
 ```
 
 ---
