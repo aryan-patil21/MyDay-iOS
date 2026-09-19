@@ -62,13 +62,13 @@ Built entirely with Apple's first-party modern frameworks, MyDay adheres strictl
 - **Zero-Config App Shortcuts:** Pre-registers voice phrases via `AppShortcutsProvider` so Siri recognizes them instantly with zero user setup.
 - **Apple Shortcuts App & Automations:** Build morning routines, NFC-triggered habit check-ins, or time-based automations.
 
-### 8. 📊 Interactive Visual Analytics with Apple Swift Charts
+### 8.  Interactive Visual Analytics with Apple Swift Charts
 - **Emotional Trajectory Spline:** `LineMark` + `AreaMark` gradient plotting on-device sentiment valence over time with zero-baseline threshold.
 - **Habit Consistency by Weekday:** `BarMark` distribution revealing peak consistency days across Monday through Sunday.
 - **Task Velocity Donut:** `SectorMark` visualizing task completions segmented by priority (High, Medium, Low).
 - **Time Range Windows:** Switch seamlessly between 7-Day and 30-Day analytical views.
 
-### 9. 🗣️ On-Device Voice-to-Text Journaling
+### 9.  On-Device Voice-to-Text Journaling
 - **Speech & AVFoundation Engine:** 100% private, on-device audio transcription via `SFSpeechRecognizer` and `AVAudioEngine`.
 - **Live Reactive Audio Waveform:** Visual feedback pulsing with microphone RMS audio levels as you speak.
 - **Real-Time Sentiment Feedback:** Live AI sentiment badge evaluating emotional tone dynamically as words are transcribed.
