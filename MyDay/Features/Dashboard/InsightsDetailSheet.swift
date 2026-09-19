@@ -38,6 +38,31 @@ struct InsightsDetailSheet: View {
     var body: some View {
         NavigationStack {
             List {
+                // Section 0: Deep Visual Analytics Link
+                Section("Interactive Data Science") {
+                    NavigationLink {
+                        AnalyticsTrendsView(tasks: tasks, habits: habits, reflections: reflections)
+                    } label: {
+                        HStack(spacing: 12) {
+                            Image(systemName: "chart.xyaxis.line")
+                                .font(.body)
+                                .foregroundStyle(.purple)
+                                .frame(width: 36, height: 36)
+                                .background(Color.purple.opacity(0.15))
+                                .clipShape(RoundedRectangle(cornerRadius: 8))
+                            
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text("Visual Analytics & Charts")
+                                    .font(.subheadline.bold())
+                                Text("Interactive sentiment trajectories & habit distributions")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                        .padding(.vertical, 4)
+                    }
+                }
+                
                 // Section 1: AI Generated Summary Cards
                 Section("Smart Insights (\(insights.count))") {
                     ForEach(insights) { insight in

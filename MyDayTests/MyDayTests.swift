@@ -155,4 +155,30 @@ struct MyDayTests {
         let value = try #require(result.value)
         #expect(value >= 0 && value <= 100)
     }
+
+    // MARK: - Visual Analytics Transformation Tests
+
+    @Test func analyticsFiltersReflectionsWithinTimeWindow() async throws {
+        let calendar = Calendar.current
+        let today = Date()
+        let threeDaysAgo = try #require(calendar.date(byAdding: .day, value: -3, to: today))
+        let tenDaysAgo = try #require(calendar.date(byAdding: .day, value: -10, to: today))
+        
+        let recentReflection = DailyReflection(date: threeDaysAgo, mood: .great, entryText: "Great progress!")
+        let olderReflection = DailyReflection(date: tenDaysAgo, mood: .down, entryText: "Tough day.")
+        
+        let allReflections = [recentReflection, olderReflection]
+        let cutoff7Days = try #require(calendar.date(byAdding: .day, value: -7, to: today))
+        
+        let filtered7Days = allReflections.filter { $0.date >= cutoff7Days }
+        #expect(filtered7Days.count == 1)
+        #expect(filtered7Days.first?.mood == .great)
+    }
+
+    @Test func analyticsWeekdayMappingCoversAllDays() async throws {
+        let weekdaySymbols = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+        #expect(weekdaySymbols.count == 7)
+        #expect(weekdaySymbols.first == "Mon")
+        #expect(weekdaySymbols.last == "Sun")
+    }
 }

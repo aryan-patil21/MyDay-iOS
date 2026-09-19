@@ -19,6 +19,7 @@ struct DashboardView: View {
     @State private var showingNewTaskSheet = false
     @State private var showingSettingsSheet = false
     @State private var showingInsightsDetailSheet = false
+    @State private var showingAnalyticsSheet = false
     
     private var insights: [InsightItem] {
         InsightsService.shared.generateInsights(tasks: tasks, habits: habits, reflections: reflections)
@@ -111,6 +112,13 @@ struct DashboardView: View {
             .navigationTitle("Today")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button {
+                        showingAnalyticsSheet = true
+                    } label: {
+                        Image(systemName: "chart.xyaxis.line")
+                    }
+                }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
                         showingSettingsSheet = true
@@ -130,6 +138,18 @@ struct DashboardView: View {
             }
             .sheet(isPresented: $showingInsightsDetailSheet) {
                 InsightsDetailSheet(tasks: tasks, habits: habits, reflections: reflections)
+            }
+            .sheet(isPresented: $showingAnalyticsSheet) {
+                NavigationStack {
+                    AnalyticsTrendsView(tasks: tasks, habits: habits, reflections: reflections)
+                        .toolbar {
+                            ToolbarItem(placement: .confirmationAction) {
+                                Button("Done") {
+                                    showingAnalyticsSheet = false
+                                }
+                            }
+                        }
+                }
             }
         }
     }
