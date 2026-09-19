@@ -9,6 +9,7 @@ import SwiftUI
 import SwiftData
 import UserNotifications
 import UniformTypeIdentifiers
+import AuthenticationServices
 
 struct SettingsSheet: View {
     @Environment(\.dismiss) private var dismiss
@@ -19,6 +20,21 @@ struct SettingsSheet: View {
     @Query private var reflections: [DailyReflection]
     
     @StateObject private var notificationManager = NotificationManager.shared
+    
+    @AppStorage("isSignedInWithApple") private var isSignedInWithApple = false
+    @AppStorage("appleUserDisplayName") private var appleUserDisplayName = ""
+    @AppStorage("appleUserEmail") private var appleUserEmail = ""
+    @AppStorage("appAppearance") private var appAppearance = "system"
+    
+    @State private var showingSignOutConfirmation = false
+    
+    private var preferredColorScheme: ColorScheme? {
+        switch appAppearance {
+        case "light": return .light
+        case "dark": return .dark
+        default: return nil
+        }
+    }
     
     @AppStorage("dailyReminderEnabled") private var dailyReminderEnabled = false
     @AppStorage("dailyReminderTime") private var dailyReminderTimeRaw: Double = {
@@ -44,7 +60,78 @@ struct SettingsSheet: View {
     var body: some View {
         NavigationStack {
             Form {
-                // Section 1: Notifications
+                // Section 0: Account
+                Section("Account") {
+                    if isSignedInWithApple {
+                        // Signed-in State
+                        HStack(spacing: 14) {
+                            Image(systemName: "person.crop.circle.badge.checkmark")
+                                .font(.title)
+                                .foregroundStyle(.green)
+                            
+                            VStack(alignment: .leading, spacing: 3) {
+                                Text(appleUserDisplayName.isEmpty ? "Apple ID User" : appleUserDisplayName)
+                                    .font(.headline)
+                                
+                                if !appleUserEmail.isEmpty {
+                                    Text(appleUserEmail)
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                
+                                Text("Signed in with Apple")
+                                    .font(.caption2)
+                                    .foregroundStyle(.green)
+                            }
+                        }
+                        .padding(.vertical, 4)
+                        
+                        Button(role: .destructive) {
+                            showingSignOutConfirmation = true
+                        } label: {
+                            Label("Sign Out", systemImage: "rectangle.portrait.and.arrow.right")
+                        }
+                    } else {
+                        // Guest User State
+                        HStack(spacing: 14) {
+                            Image(systemName: "person.crop.circle")
+                                .font(.title)
+                                .foregroundStyle(.secondary)
+                            
+                            VStack(alignment: .leading, spacing: 3) {
+                                Text("Guest Mode")
+                                    .font(.headline)
+                                Text("Local data on this device only")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                        .padding(.vertical, 4)
+                        
+                        SignInWithAppleButton(.signIn) { request in
+                            request.requestedScopes = [.fullName, .email]
+                        } onCompletion: { result in
+                            handleAppleSignIn(result: result)
+                        }
+                        .signInWithAppleButtonStyle(.black)
+                        .frame(height: 44)
+                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                        .padding(.vertical, 2)
+                    }
+                }
+                
+                // Section 1: Appearance
+                Section("Appearance") {
+                    Picker("Appearance", selection: $appAppearance) {
+                        Text("System").tag("system")
+                        Text("Light").tag("light")
+                        Text("Dark").tag("dark")
+                    }
+                    .pickerStyle(.segmented)
+                    .labelsHidden()
+                }
+                
+                // Section 2: Notifications
                 Section("Notifications & Reminders") {
                     HStack {
                         Label("Notification Access", systemImage: "bell.badge.fill")
@@ -168,9 +255,66 @@ struct SettingsSheet: View {
             } message: {
                 Text(alertMessage)
             }
+            .confirmationDialog(
+                "Are you sure you want to sign out?",
+                isPresented: $showingSignOutConfirmation,
+                titleVisibility: .visible
+            ) {
+                Button("Sign Out", role: .destructive) {
+                    signOut()
+                }
+                Button("Cancel", role: .cancel) {}
+            } message: {
+                Text("You will return to Guest Mode. Your local tasks, habits, and reflections will remain intact on this device.")
+            }
             .task {
                 await notificationManager.updateAuthorizationStatus()
             }
+            .preferredColorScheme(preferredColorScheme)
+        }
+    }
+    
+    // MARK: - Apple Sign-In & Sign-Out Handlers
+    
+    private func handleAppleSignIn(result: Result<ASAuthorization, Error>) {
+        switch result {
+        case .success(let authorization):
+            if let credential = authorization.credential as? ASAuthorizationAppleIDCredential {
+                var displayName = ""
+                if let name = credential.fullName {
+                    let formatted = PersonNameComponentsFormatter().string(from: name)
+                    if !formatted.isEmpty {
+                        displayName = formatted
+                    }
+                }
+                
+                let email = credential.email ?? ""
+                
+                if !displayName.isEmpty {
+                    self.appleUserDisplayName = displayName
+                }
+                if !email.isEmpty {
+                    self.appleUserEmail = email
+                }
+                withAnimation {
+                    self.isSignedInWithApple = true
+                }
+            }
+        case .failure(let error):
+            if let asError = error as? ASAuthorizationError, asError.code == .canceled {
+                return
+            }
+            alertTitle = "Sign in Failed"
+            alertMessage = error.localizedDescription
+            showingAlert = true
+        }
+    }
+    
+    private func signOut() {
+        withAnimation {
+            isSignedInWithApple = false
+            appleUserDisplayName = ""
+            appleUserEmail = ""
         }
     }
     

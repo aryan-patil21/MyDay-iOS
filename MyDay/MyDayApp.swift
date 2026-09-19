@@ -12,6 +12,15 @@ import AppIntents
 @main
 struct MyDayApp: App {
     private let database = AppDatabase.shared
+    @AppStorage("appAppearance") private var appAppearance = "system"
+
+    private var preferredColorScheme: ColorScheme? {
+        switch appAppearance {
+        case "light": return .light
+        case "dark": return .dark
+        default: return nil
+        }
+    }
 
     init() {
         // Required by Apple: registers MyDayShortcuts with iOS Siri & Shortcuts system.
@@ -23,6 +32,7 @@ struct MyDayApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .preferredColorScheme(preferredColorScheme)
         }
         .modelContainer(database.container)
     }
