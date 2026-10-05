@@ -383,6 +383,11 @@ struct DashboardView: View {
                         NotificationManager.shared.cancelTaskReminder(for: task)
                     }
                 }
+                if task.isCompleted {
+                    HapticsManager.shared.success()
+                } else {
+                    HapticsManager.shared.selection()
+                }
             } label: {
                 Image(systemName: task.isCompleted ? "checkmark.circle.fill" : "circle")
                     .font(.system(size: 20))

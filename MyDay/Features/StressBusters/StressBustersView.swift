@@ -236,6 +236,7 @@ struct BreathingActivityView: View {
     }
     
     private func startBreathing() {
+        HapticsManager.shared.impact(.medium)
         isActive = true
         transitionTo(phase: .inhale, duration: 4)
         
@@ -247,6 +248,7 @@ struct BreathingActivityView: View {
     }
     
     private func stopBreathing() {
+        HapticsManager.shared.impact(.light)
         timerSubscription?.cancel()
         timerSubscription = nil
         isActive = false
@@ -275,6 +277,17 @@ struct BreathingActivityView: View {
     }
     
     private func transitionTo(phase: BreathPhase, duration: Int) {
+        switch phase {
+        case .inhale:
+            HapticsManager.shared.impact(.light)
+        case .hold:
+            HapticsManager.shared.selection()
+        case .exhale:
+            HapticsManager.shared.impact(.soft)
+        case .ready:
+            break
+        }
+        
         self.phase = phase
         self.secondsRemaining = duration
         withAnimation(.easeInOut(duration: Double(duration))) {
@@ -323,6 +336,7 @@ struct QuickReflectionActivityView: View {
                 
                 VStack(spacing: 12) {
                     Button {
+                        HapticsManager.shared.impact(.heavy)
                         withAnimation(.easeInOut(duration: 0.35)) {
                             isReleased = true
                         }
@@ -365,6 +379,7 @@ struct QuickReflectionActivityView: View {
                 Spacer()
                 
                 Button("Done") {
+                    HapticsManager.shared.success()
                     dismiss()
                 }
                 .font(.body.bold())
@@ -440,6 +455,11 @@ struct GroundingActivityView: View {
                 
                 // Next Button
                 Button {
+                    if currentStep == 5 {
+                        HapticsManager.shared.success()
+                    } else {
+                        HapticsManager.shared.selection()
+                    }
                     withAnimation(.easeInOut(duration: 0.3)) {
                         currentStep += 1
                     }
@@ -477,6 +497,7 @@ struct GroundingActivityView: View {
                 Spacer()
                 
                 Button("Done") {
+                    HapticsManager.shared.selection()
                     dismiss()
                 }
                 .font(.body.bold())

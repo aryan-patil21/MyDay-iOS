@@ -119,6 +119,11 @@ struct HabitsView: View {
         withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
             habit.toggleCompletionToday()
         }
+        if habit.isCompletedToday {
+            HapticsManager.shared.success()
+        } else {
+            HapticsManager.shared.selection()
+        }
     }
     
     private func deleteHabits(at offsets: IndexSet) {

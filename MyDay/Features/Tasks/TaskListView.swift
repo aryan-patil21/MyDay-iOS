@@ -102,6 +102,11 @@ struct TaskListView: View {
                 NotificationManager.shared.cancelTaskReminder(for: task)
             }
         }
+        if task.isCompleted {
+            HapticsManager.shared.success()
+        } else {
+            HapticsManager.shared.selection()
+        }
     }
     
     private func deletePendingTasks(at offsets: IndexSet) {

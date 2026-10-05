@@ -42,6 +42,7 @@ struct NewReflectionSheet: View {
                     HStack(spacing: 8) {
                         ForEach(Mood.allCases) { mood in
                             Button {
+                                HapticsManager.shared.selection()
                                 selectedMood = mood
                             } label: {
                                 VStack(spacing: 4) {
@@ -74,6 +75,7 @@ struct NewReflectionSheet: View {
                         ForEach(availableTags, id: \.self) { tag in
                             let isSelected = selectedTags.contains(tag)
                             Button {
+                                HapticsManager.shared.selection()
                                 if isSelected {
                                     selectedTags.remove(tag)
                                 } else {
@@ -230,6 +232,7 @@ struct NewReflectionSheet: View {
     }
     
     private func saveReflection() {
+        HapticsManager.shared.success()
         let newReflection = DailyReflection(
             mood: selectedMood,
             tags: Array(selectedTags),
